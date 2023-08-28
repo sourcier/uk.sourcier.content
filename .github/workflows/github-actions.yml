@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
+  deploy-to-staging:
     runs-on: 'ubuntu-latest'
     steps:
       - name: Checkout
@@ -30,4 +30,4 @@ jobs:
       - name: trigger staging deploy
         env:
           SEED_TOKEN: ${{ secrets.SEED_TOKEN }}
-        run: seed deploy --org sourcierltd --app friendly-broccoli --stage staging --commit ${{ github.sha }}
+        run: npx seed deploy --org sourcierltd --app friendly-broccoli --stage staging --commit ${{ github.sha }}
