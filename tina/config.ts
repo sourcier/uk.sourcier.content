@@ -1,10 +1,10 @@
 import { defineConfig } from 'tinacms';
-import type { Template } from 'tinacms';
+import type { Template, TinaField } from 'tinacms';
 
 // Your hosting provider likely exposes this as an environment variable
 const branch = process.env.HEAD || process.env.VERCEL_GIT_COMMIT_REF || 'main';
 
-const heroBlock: Template = {
+const hero: Template = {
   name: 'hero',
   label: 'Hero',
   ui: {
@@ -52,6 +52,41 @@ const heroBlock: Template = {
   ],
 };
 
+const topBlocks = [hero];
+// todo: add bottom blocks
+// const bottomBlocks = [];
+
+const pageFields: TinaField[] = [
+  {
+    type: 'string',
+    name: 'title',
+    label: 'Title',
+    isTitle: true,
+    required: true,
+  },
+  {
+    type: 'object',
+    list: true,
+    name: 'topBlocks',
+    label: 'Top Blocks',
+    templates: topBlocks,
+  },
+  {
+    type: 'rich-text',
+    name: 'body',
+    label: 'Body',
+    isBody: true,
+  },
+  // todo: add bottom blocks
+  // {
+  //   type: 'object',
+  //   list: true,
+  //   name: 'bottomBlocks',
+  //   label: 'Bottom Blocks',
+  //   templates: bottomBlocks,
+  // },
+];
+
 const config = defineConfig({
   branch,
   localContentPath: process.env.TINACMS_REMOTE_ROOT_PATH,
@@ -71,25 +106,62 @@ const config = defineConfig({
   schema: {
     collections: [
       {
-        name: 'post',
-        label: 'Posts',
-        path: 'posts',
-        format: 'md',
-        fields: [
-          {
-            type: 'string',
-            name: 'title',
-            label: 'Title',
-            isTitle: true,
-            required: true,
+        name: 'home',
+        label: 'Home',
+        path: '',
+        format: 'mdx',
+        match: {
+          include: 'home',
+        },
+        fields: pageFields,
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
           },
-          {
-            type: 'rich-text',
-            name: 'body',
-            label: 'Body',
-            isBody: true,
+          router: async () => `/`,
+        },
+      },
+      {
+        name: 'aboutUs',
+        label: 'About Us',
+        path: '',
+        format: 'mdx',
+        match: {
+          include: 'about-us',
+        },
+        fields: pageFields,
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
           },
-        ],
+          router: async () => `/about-us`,
+        },
+      },
+      {
+        name: 'contactUs',
+        label: 'Contact Us',
+        path: '',
+        format: 'mdx',
+        match: {
+          include: 'contact-us',
+        },
+        fields: pageFields,
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
+          },
+          router: async () => `/contact-us`,
+        },
+      },
+      {
+        name: 'blog',
+        label: 'Blog',
+        path: 'blog',
+        format: 'mdx',
+        fields: pageFields,
         ui: {
           router: async ({ document }) => `/blog/${document._sys.filename}`,
           filename: {
@@ -101,41 +173,6 @@ const config = defineConfig({
                 .replace(/[^a-zA-Z0-9-]/g, '');
             },
           },
-        },
-      },
-      {
-        name: 'homepage',
-        label: 'Homepage',
-        path: 'homepage',
-        format: 'md',
-        fields: [
-          {
-            type: 'object',
-            list: true,
-            name: 'blocks',
-            label: 'Sections',
-            templates: [heroBlock],
-          },
-          {
-            type: 'string',
-            name: 'title',
-            label: 'Title',
-            isTitle: true,
-            required: true,
-          },
-          {
-            type: 'rich-text',
-            name: 'body',
-            label: 'Body',
-            isBody: true,
-          },
-        ],
-        ui: {
-          allowedActions: {
-            create: false,
-            delete: false,
-          },
-          router: async () => `/`,
         },
       },
     ],
