@@ -119,7 +119,7 @@ const config = defineConfig({
             create: false,
             delete: false,
           },
-          router: ({
+          router: async ({
             document: {
               _sys: { filename },
             },
@@ -133,7 +133,7 @@ const config = defineConfig({
         format: 'mdx',
         fields: pageFields,
         ui: {
-          router: ({ document }) => `/blog/${document._sys.filename}`,
+          router: async ({ document }) => `/blog/${document._sys.filename}`,
           filename: {
             readonly: true,
             slugify({ title = '' }) {
