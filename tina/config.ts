@@ -106,12 +106,12 @@ const config = defineConfig({
   schema: {
     collections: [
       {
-        name: 'home',
-        label: 'Home',
-        path: '',
+        name: 'pages',
+        label: 'Pages',
+        path: 'pages',
         format: 'mdx',
         match: {
-          include: 'home',
+          include: '{index,about-us,contact-us,our-courses}',
         },
         fields: pageFields,
         ui: {
@@ -119,51 +119,21 @@ const config = defineConfig({
             create: false,
             delete: false,
           },
-          router: async () => `/`,
-        },
-      },
-      {
-        name: 'aboutUs',
-        label: 'About Us',
-        path: '',
-        format: 'mdx',
-        match: {
-          include: 'about-us',
-        },
-        fields: pageFields,
-        ui: {
-          allowedActions: {
-            create: false,
-            delete: false,
-          },
-          router: async () => `/about-us`,
-        },
-      },
-      {
-        name: 'contactUs',
-        label: 'Contact Us',
-        path: '',
-        format: 'mdx',
-        match: {
-          include: 'contact-us',
-        },
-        fields: pageFields,
-        ui: {
-          allowedActions: {
-            create: false,
-            delete: false,
-          },
-          router: async () => `/contact-us`,
+          router: ({
+            document: {
+              _sys: { filename },
+            },
+          }) => (filename === 'index' ? '/' : `/${filename}`),
         },
       },
       {
         name: 'blog',
         label: 'Blog',
-        path: 'blog',
+        path: 'pages/blog',
         format: 'mdx',
         fields: pageFields,
         ui: {
-          router: async ({ document }) => `/blog/${document._sys.filename}`,
+          router: ({ document }) => `/blog/${document._sys.filename}`,
           filename: {
             readonly: true,
             slugify({ title = '' }) {
